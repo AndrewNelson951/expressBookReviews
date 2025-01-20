@@ -52,6 +52,25 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     return res.status(200).json({message: "Review added"});
   });
 
+// Delete a book review
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    console.log("Deleting...");
+    const { isbn } = req.params;
+    const sessionData = req.session.authorization;
+    if (!sessionData || !sessionData.accessToken) {
+        return res.status(401).json({ message: 'Unauthorized: No token found' });
+    }
+    const decoded = jwt.verify(token, 'access'); // Use your secret key
+    const username = decoded.data; // Attach the username to the request object
+
+    console.log("Hello");
+    //if (books[isbn] && books[isbn].reviews && username in books[isbn].reviews) {
+    //    delete books[isbn].reviews[username];
+    // return res.status(200).json({message: "Review deleted"});
+    //}
+    return res.status(404).json({ message: "Review not found" });
+  });
+
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
