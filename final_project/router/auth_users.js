@@ -35,7 +35,7 @@ regd_users.post("/login", (req, res) => {
     } else {
       return res.status(208).json({ message: "Invalid Login. Check username and password" });
     }
-  });
+});
 
 
 // Add a book review
@@ -50,7 +50,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const username = decoded.data; // Attach the username to the request object
     books[isbn].reviews[username] = review;
     return res.status(200).json({message: "Review added"});
-  });
+});
 
 // Delete a book review
 regd_users.delete("/auth/review/:isbn", (req, res) => {
@@ -63,13 +63,12 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     const decoded = jwt.verify(token, 'access'); // Use your secret key
     const username = decoded.data; // Attach the username to the request object
 
-    console.log("Hello");
-    //if (books[isbn] && books[isbn].reviews && username in books[isbn].reviews) {
-    //    delete books[isbn].reviews[username];
-    // return res.status(200).json({message: "Review deleted"});
-    //}
-    return res.status(404).json({ message: "Review not found" });
-  });
+    if (books[isbn] && books[isbn].reviews && username in books[isbn].reviews) {
+        delete books[isbn].reviews[username];
+        return res.status(200).json({message: "Review deleted"});
+    }
+    return res.status(500).json({ message: "Review not found" });
+});
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
